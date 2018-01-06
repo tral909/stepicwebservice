@@ -19,19 +19,19 @@ public class AllRequestsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html;charset=utf-8");
         Map<String, Object> pageVariables = createPageVariablesMap(req);
         pageVariables.put("message", "");
         PrintWriter writer = resp.getWriter();
         writer.println(PageGenerator.instance().getPage(htmlFile, pageVariables));
-        resp.setContentType("text/html;charset=utf-8");
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html;charset=utf-8");
         Map<String, Object> pageVariables = createPageVariablesMap(req);
         String message = req.getParameter("message");
-        resp.setContentType("text/html;charset=utf-8");
         if (message == null || message.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
