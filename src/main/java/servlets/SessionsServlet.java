@@ -1,6 +1,7 @@
 package servlets;
 
 import accounts.AccountService;
+import accounts.DBException;
 import accounts.UserProfile;
 import com.google.gson.Gson;
 import javax.servlet.ServletException;
@@ -46,18 +47,22 @@ public class SessionsServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        UserProfile profile = accountService.getUserByLogin(login);
-        if (profile == null || !profile.getPassword().equals(pass)) {
+        try {
+            UserProfile profile = accountService.getUserByLogin(login);
+            if (profile == null || !profile.getPassword().equals(pass)) {
+                resp.setContentType("text/html;charset=utf-8");
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+            accountService.addSession(req.getSession().getId(), profile);
+            Gson gson = new Gson();
+            String json = gson.toJson(profile);
             resp.setContentType("text/html;charset=utf-8");
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            resp.getWriter().println(json);
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } catch (DBException e) {
+            e.printStackTrace();
         }
-        accountService.addSession(req.getSession().getId(), profile);
-        Gson gson = new Gson();
-        String json = gson.toJson(profile);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println(json);
-        resp.setStatus(HttpServletResponse.SC_OK);
     }
 
     //sign out

@@ -1,7 +1,6 @@
 package main;
 
 import accounts.AccountService;
-import accounts.UserProfile;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -16,8 +15,8 @@ import servlets.*;
 public class Main {
     public static void main(String[] args) throws Exception {
         AccountService accountService = new AccountService();
-        accountService.addNewUser(new UserProfile("admin"));
-        accountService.addNewUser(new UserProfile("test"));
+//        accountService.addNewUser(new UserProfile("admin"));
+//        accountService.addNewUser(new UserProfile("test"));
 
         AllRequestsServlet allRequestsServlet = new AllRequestsServlet();
         MirrorServlet mirrorServlet = new MirrorServlet();
@@ -40,6 +39,7 @@ public class Main {
         server.setHandler(handlers);
 
         server.start();
+        accountService.createUserTable();
         System.out.println("Server started");
         server.join();
     }
